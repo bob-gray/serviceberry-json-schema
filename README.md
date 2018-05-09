@@ -2,8 +2,8 @@ serviceberry-json-schema
 ========================
 
 [![CircleCI](https://circleci.com/gh/bob-gray/serviceberry-json-schema.svg?style=svg)](https://circleci.com/gh/bob-gray/serviceberry-json-schema)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/5a4fc498c6e90455f103/test_coverage)](https://codeclimate.com/github/bob-gray/serviceberry-jwt/test_coverage)
-[![Maintainability](https://api.codeclimate.com/v1/badges/5a4fc498c6e90455f103/maintainability)](https://codeclimate.com/github/bob-gray/serviceberry-jwt/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/991c894da2d8a7d8465c/test_coverage)](https://codeclimate.com/github/bob-gray/serviceberry-json-schema/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/991c894da2d8a7d8465c/maintainability)](https://codeclimate.com/github/bob-gray/serviceberry-json-schema/maintainability)
 [![npm version](https://badge.fury.io/js/serviceberry-json-schema.svg)](https://badge.fury.io/js/serviceberry-json-schema)
 
 JSON Schema validator plugin for [Serviceberry](https://serviceberry.js.org). For
