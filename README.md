@@ -18,9 +18,11 @@ npm install serviceberry-json-schema
 Usage
 -----
 This plugin exports a function that create handlers. To use this
-plugin, call this function with a schema object and an optional [options](#options)
-object. The second argument can be a validator instance instead that has a
-`compile` method that returns a `validate` function.
+plugin, call this function with a schema object and an optional options
+object. The second argument can also be a validator instance instead.
+Validators are objects with a `compile` method that returns
+a `validate` function (such as a [Ajv](https://www.npmjs.com/package/ajv)
+instance) If an options object is passed a new Ajv instance is created.
 
 
 ```js
