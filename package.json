@@ -1,8 +1,14 @@
 {
   "name": "serviceberry-json-schema",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A JSON schema validator plugin for Serviceberry",
   "main": "plugin.js",
+  "files": [
+    "plugin.js"
+  ],
+  "directories": {
+    "test" "spec"
+  },
   "scripts": {
     "build": "npm run lint && npm run test-coverage",
     "lint": "eslint plugin.js",
