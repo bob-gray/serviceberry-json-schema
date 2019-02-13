@@ -54,7 +54,8 @@ describe("serviceberry-json-schema", () => {
 			}));
 			fail();
 		} catch (error) {
-			expect(error.is("Unprocessible Entity")).toBe(true);
+			expect(error.is("Unprocessable Entity")).toBe(true);
+			expect(error.is(422)).toBe(true);
 		}
 	});
 
@@ -67,7 +68,8 @@ describe("serviceberry-json-schema", () => {
 			}));
 			fail();
 		} catch (error) {
-			expect(error.is("Unprocessible Entity")).toBe(true);
+			expect(error.is("Unprocessable Entity")).toBe(true);
+			expect(error.is(422)).toBe(true);
 		}
 	});
 

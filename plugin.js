@@ -33,7 +33,7 @@ async function validator (validate, request) {
 	}
 
 	if (errors) {
-		throw new HttpError(getMessage(errors), "Unprocessible Entity");
+		throw new HttpError(getMessage(errors), "Unprocessable Entity");
 	}
 }
 
