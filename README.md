@@ -17,12 +17,12 @@ npm install serviceberry-json-schema
 
 Usage
 -----
-This plugin exports a function that create handlers. To use this
+This plugin exports a function that creates handlers. To use this
 plugin, call this function with a schema object and an optional options
-object. The second argument can also be a validator instance instead.
+object. The second argument can also be a validator instance.
 Validators are objects with a `compile` method that returns
 a `validate` function (such as a [Ajv](https://www.npmjs.com/package/ajv)
-instance) If an options object is passed a new Ajv instance is created.
+instance) If an options object is passed, a new Ajv instance is created.
 
 
 ```js
@@ -42,7 +42,6 @@ trunk.use(jsonSchema({
 		"firstName",
 		"lastName"
 	]
-}
 }));
 ```
 
@@ -54,7 +53,17 @@ jsonSchema(schema[, options])
 
   - **options** *object*
 
-    [Ajv Options](https://www.npmjs.com/package/ajv#options).
+    [Ajv Options](https://www.npmjs.com/package/ajv#options) with one additional property *param*.
+    
+     - **param** *string*
+     
+       A dot delimited identifier specifying the request parameter to be validated. In the form of "*type.name*"
+       or "*type*" where *type* is one of *path*, *query*, *header*, *body*, or *all*. Defaults to *all* which is
+       equivalent to [`request.getParams()`](https://serviceberry.js.org/docs/request#getparams).
+       
+       Examples include: "body" ([`request.getBody()`](https://serviceberry.js.org/docs/request#getbody)),
+       "body.widget" ([`request.getBodyParam("widget")`](https://serviceberry.js.org/docs/request#getbodyparam)),
+       "header.Content-Length"  ([`request.getHeader("Content-Length")`](https://serviceberry.js.org/docs/request#getheader))...
 
 
 jsonSchema(schema, validator)
