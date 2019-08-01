@@ -10,11 +10,11 @@
     "test": "spec"
   },
   "scripts": {
-    "build": "npm run lint && npm run test-coverage",
+    "build": "npm run lint && npm run test:coverage",
     "lint": "eslint plugin.js",
     "lint:spec": "eslint spec/**",
     "test": "jasmine",
-    "test-coverage": "nyc --include=plugin.js --reporter=lcov --reporter=text npm test"
+    "test:coverage": "nyc --include=plugin.js --reporter=lcov --reporter=text npm test"
   },
   "repository": {
     "type": "git",
@@ -37,17 +37,17 @@
   },
   "homepage": "https://github.com/bob-gray/serviceberry-json-schema#readme",
   "peerDependencies": {
-    "serviceberry": ">=0.3.0"
+    "serviceberry": "*"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
-    "jasmine": "^3.1.0",
+    "jasmine": "^3.4.0",
     "jasmine-spec-reporter": "^4.2.1",
-    "node-mocks-http": "^1.5.8",
-    "nyc": "^11.7.1",
-    "serviceberry": "^0.3.0"
+    "node-mocks-http": "^1.7.6",
+    "nyc": "^14.1.1",
+    "serviceberry": "^0.7.6"
   },
   "dependencies": {
-    "ajv": "^6.4.0"
+    "ajv": "^6.10.2"
   }
 }
