@@ -103,19 +103,30 @@ describe("serviceberry-json-schema", () => {
 		expect(typeof handler).toBe("function");
 	});
 
-	it("should throw an error when options.param is malformed", () => {
-		var options = {
-			param: "foo"
-		};
+	it("should throw an error when param is not a getter and is undefined on request", async () => {
+		var promise;
 
-		expect(jsonSchema.bind(null, schema, options))
-			.toThrowError("serviceberry-json-schema: unknown request param \"foo\"");
+		handler = jsonSchema(schema, "foo");
+
+		promise = handler(request);
+
+		await expectAsync(promise).toBeRejected();
+
+		promise.catch(error => {
+			expect(error.message.startsWith("serviceberry-json-schema: request has no own property")).toBe(true);
+		});
+	});
+
+	it("should get a param as a own property of request", async () => {
+		handler = jsonSchema(schema, "foo");
+
+		request.foo = request.getParams();
+
+		await expectAsync(handler(request)).toBeResolved();
 	});
 
 	it("should validate the path params", async () => {
-		handler = jsonSchema(schema, {
-			param: "path"
-		});
+		handler = jsonSchema(schema, "path");
 
 		await expectAsync(handler(request)).toBeResolved();
 
@@ -123,11 +134,11 @@ describe("serviceberry-json-schema", () => {
 	});
 
 	it("should validate a named path param", async () => {
-		handler = jsonSchema({
+		schema = {
 			type: "string"
-		}, {
-			param: "path.firstName"
-		});
+		};
+
+		handler = jsonSchema(schema, "path.firstName");
 
 		await expectAsync(handler(request)).toBeResolved();
 
@@ -135,9 +146,7 @@ describe("serviceberry-json-schema", () => {
 	});
 
 	it("should validate the query params", async () => {
-		handler = jsonSchema(schema, {
-			param: "query"
-		});
+		handler = jsonSchema(schema, "query");
 
 		await expectAsync(handler(request)).toBeResolved();
 
@@ -145,11 +154,11 @@ describe("serviceberry-json-schema", () => {
 	});
 
 	it("should validate a named query param", async () => {
-		handler = jsonSchema({
+		schema = {
 			type: "string"
-		}, {
-			param: "query.firstName"
-		});
+		};
+
+		handler = jsonSchema(schema, "query.firstName");
 
 		await expectAsync(handler(request)).toBeResolved();
 
@@ -157,9 +166,7 @@ describe("serviceberry-json-schema", () => {
 	});
 
 	it("should validate the header params", async () => {
-		handler = jsonSchema(schema, {
-			param: "header"
-		});
+		handler = jsonSchema(schema, "header");
 
 		await expectAsync(handler(request)).toBeResolved();
 
@@ -167,11 +174,11 @@ describe("serviceberry-json-schema", () => {
 	});
 
 	it("should validate a named header param", async () => {
-		handler = jsonSchema({
+		schema = {
 			type: "string"
-		}, {
-			param: "header.firstName"
-		});
+		};
+
+		handler = jsonSchema(schema, "header.firstName");
 
 		await expectAsync(handler(request)).toBeResolved();
 
@@ -179,9 +186,7 @@ describe("serviceberry-json-schema", () => {
 	});
 
 	it("should validate the body", async () => {
-		handler = jsonSchema(schema, {
-			param: "body"
-		});
+		handler = jsonSchema(schema, "body");
 
 		await expectAsync(handler(request)).toBeResolved();
 
@@ -189,9 +194,7 @@ describe("serviceberry-json-schema", () => {
 	});
 
 	it("should validate a named body param", async () => {
-		handler = jsonSchema(schema, {
-			param: "body.person"
-		});
+		handler = jsonSchema(schema, "body.person");
 
 		request = createRequest({
 			person: request.getParams()
@@ -203,12 +206,12 @@ describe("serviceberry-json-schema", () => {
 	});
 
 	it("should validate an array body", async () => {
-		handler = jsonSchema({
+		schema = {
 			type: "array",
 			items: schema
-		}, {
-			param: "body"
-		});
+		};
+
+		handler = jsonSchema(schema, "body");
 
 		request = createRequest([request.getParams()]);
 

@@ -16,14 +16,20 @@ const Ajv = require("ajv"),
 		body: bodyByName
 	};
 
-function jsonSchema (schema, options = {}) {
+function jsonSchema (schema, param, options = {}) {
 	var ajv,
-		paramGetter = getParamGetter(options.param);
+		paramGetter;
+
+	if (arguments.length === 2 && typeof param !== "string") {
+		options = param;
+		param = undefined;
+	}
+
+	paramGetter = getParamGetter(param);
 
 	if (options.compile) {
 		ajv = options;
 	} else {
-		delete options.param;
 		ajv = new Ajv(options);
 	}
 
@@ -55,7 +61,8 @@ async function validator (validate, paramGetter, request) {
 function getParamGetter (param = "all") {
 	var parts = param.split("."),
 		[type, name] = parts,
-		getters;
+		getters,
+		getter;
 
 	if (name) {
 		getters = getByName;
@@ -63,11 +70,13 @@ function getParamGetter (param = "all") {
 		getters = get;
 	}
 
-	if (!getters.hasOwnProperty(type)) {
-		throw Error(`serviceberry-json-schema: unknown request param "${param}"`);
+	if (getters.hasOwnProperty(type)) {
+		getter = getters[type].bind(null, ...parts.slice(1));
+	} else {
+		getter = getOwnRequestProperty.bind(null, type);
 	}
 
-	return getters[type].bind(null, ...parts.slice(1));
+	return getter;
 }
 
 function all (request) {
@@ -104,6 +113,17 @@ function headerByName (name, request) {
 
 function bodyByName (name, request) {
 	return request.getBodyParam(name);
+}
+
+function getOwnRequestProperty (name, request) {
+	if (!request.hasOwnProperty(name)) {
+		throw Error(
+			`serviceberry-json-schema: request has no own property "${name}".` +
+				`Did you indent to use a getter: ${Object.keys(get).join(", ")}?`
+		);
+	}
+
+	return request[name];
 }
 
 function getMessage (errors) {

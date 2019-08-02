@@ -45,34 +45,41 @@ trunk.use(jsonSchema({
 }));
 ```
 
-jsonSchema(schema[, options])
------------------------------
+jsonSchema(schema[, param][, options])
+--------------------------------------
+
   - **schema** *object*
 
     [JSON Schema](http://json-schema.org/)
+
+  - **param** *string*
+     
+    A dot delimited identifier specifying the request parameter to be validated. In the form of "*type.name*"
+    or "*type*" where *type* is one of *path*, *query*, *header*, *body*, or *all* or *param* is the name of an own
+    property of the request object.
+    
+    Defaults to *all* which is equivalent to [`request.getParams()`](https://serviceberry.js.org/docs/request#getparams).
+    Other examples include: "body" ([`request.getBody()`](https://serviceberry.js.org/docs/request#getbody)),
+    "body.widget" ([`request.getBodyParam("widget")`](https://serviceberry.js.org/docs/request#getbodyparam)),
+    "header.Content-Length"  ([`request.getHeader("Content-Length")`](https://serviceberry.js.org/docs/request#getheader))...
 
   - **options** *object*
 
-    [Ajv Options](https://www.npmjs.com/package/ajv#options) with one additional property *param*.
-    
-     - **param** *string*
-     
-       A dot delimited identifier specifying the request parameter to be validated. In the form of "*type.name*"
-       or "*type*" where *type* is one of *path*, *query*, *header*, *body*, or *all*. Defaults to *all* which is
-       equivalent to [`request.getParams()`](https://serviceberry.js.org/docs/request#getparams).
-       
-       Examples include: "body" ([`request.getBody()`](https://serviceberry.js.org/docs/request#getbody)),
-       "body.widget" ([`request.getBodyParam("widget")`](https://serviceberry.js.org/docs/request#getbodyparam)),
-       "header.Content-Length"  ([`request.getHeader("Content-Length")`](https://serviceberry.js.org/docs/request#getheader))...
+    [Ajv Options](https://www.npmjs.com/package/ajv#options)
 
 
-jsonSchema(schema, validator)
------------------------------
+jsonSchema(schema[, param][, validator])
+----------------------------------------
+
   - **schema** *object*
 
     [JSON Schema](http://json-schema.org/)
 
+  - **param** *string*
+     
+    See above
+
   - **validator** *object*
 
-    [Ajv](https://www.npmjs.com/package/ajv) instance or any object that has a
-	`compile` method that takes the `schema` and returns a `validate` function.
+    [Ajv](https://www.npmjs.com/package/ajv) instance or any object that has a `compile` method that takes the `schema`
+    and returns a `validate` function.
