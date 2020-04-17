@@ -30,7 +30,7 @@ async function jsonSchema (schema, param, options = {}) {
 	if (options.compileAsync) {
 		ajv = options;
 	} else {
-		ajv = new Ajv(options);
+		ajv = new Ajv(Object.assign({loadSchema: Function.prototype}, options));
 	}
 
 	return validator.bind(this, await ajv.compileAsync(schema), paramGetter);
