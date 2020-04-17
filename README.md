@@ -20,7 +20,7 @@ Usage
 This plugin exports a function that creates handlers. To use this
 plugin, call this function with a schema object and an optional options
 object. The second argument can also be a validator instance.
-Validators are objects with a `compile` method that returns
+Validators are objects with a `compileAsync` method that returns
 a `validate` function (such as a [Ajv](https://www.npmjs.com/package/ajv)
 instance) If an options object is passed, a new Ajv instance is created.
 
@@ -45,8 +45,8 @@ trunk.use(jsonSchema({
 }));
 ```
 
-jsonSchema(schema[, param][, options])
---------------------------------------
+async jsonSchema(schema[, param][, options])
+--------------------------------------------
 
   - **schema** *object*
 
@@ -68,8 +68,8 @@ jsonSchema(schema[, param][, options])
     [Ajv Options](https://www.npmjs.com/package/ajv#options)
 
 
-jsonSchema(schema[, param][, validator])
-----------------------------------------
+async jsonSchema(schema[, param][, validator])
+----------------------------------------------
 
   - **schema** *object*
 
@@ -81,5 +81,5 @@ jsonSchema(schema[, param][, validator])
 
   - **validator** *object*
 
-    [Ajv](https://www.npmjs.com/package/ajv) instance or any object that has a `compile` method that takes the `schema`
+    [Ajv](https://www.npmjs.com/package/ajv) instance or any object that has a `compileAsync` method that takes the `schema`
     and returns a `validate` function.
