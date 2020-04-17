@@ -16,7 +16,7 @@ const Ajv = require("ajv"),
 		body: bodyByName
 	};
 
-function jsonSchema (schema, param, options = {}) {
+async function jsonSchema (schema, param, options = {}) {
 	var ajv,
 		paramGetter;
 
@@ -27,13 +27,13 @@ function jsonSchema (schema, param, options = {}) {
 
 	paramGetter = getParamGetter(param);
 
-	if (options.compile) {
+	if (options.compileAsync) {
 		ajv = options;
 	} else {
 		ajv = new Ajv(options);
 	}
 
-	return validator.bind(this, ajv.compile(schema), paramGetter);
+	return validator.bind(this, await ajv.compileAsync(schema), paramGetter);
 }
 
 async function validator (validate, paramGetter, request) {
@@ -131,7 +131,7 @@ function getMessage (errors) {
 }
 
 function toMessages (error) {
-	return error.message;
+	return error.dataPath.slice(1) + " " + error.message;
 }
 
 module.exports = jsonSchema;
