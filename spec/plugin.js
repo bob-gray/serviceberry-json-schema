@@ -1,3 +1,4 @@
+/* eslint-env jasmine */
 /* globals expectAsync */
 
 "use strict";
@@ -12,7 +13,7 @@ describe("serviceberry-json-schema", () => {
 		handler,
 		request;
 
-	beforeEach(() => {
+	beforeEach(async () => {
 		schema = {
 			title: "Person",
 			type: "object",
@@ -34,7 +35,7 @@ describe("serviceberry-json-schema", () => {
 				"lastName"
 			]
 		};
-		handler = jsonSchema(schema);
+		handler = await jsonSchema(schema);
 		request = createRequest({
 			firstName: "John",
 			lastName: "Doe"
@@ -70,7 +71,7 @@ describe("serviceberry-json-schema", () => {
 
 		try {
 			schema.$async = true;
-			handler = jsonSchema(schema);
+			handler = await jsonSchema(schema);
 			await handler(request);
 			fail();
 		} catch (error) {
@@ -79,9 +80,9 @@ describe("serviceberry-json-schema", () => {
 		}
 	});
 
-	it("should except a second argument of an instance that has a compile method", async () => {
-		handler = jsonSchema({}, {
-			compile () {
+	it("should except a second argument of an instance that has a compileAsync method", async () => {
+		handler = await jsonSchema({}, {
+			compileAsync () {
 				// compile schema
 			}
 		});
@@ -106,7 +107,7 @@ describe("serviceberry-json-schema", () => {
 	it("should throw an error when param is not a getter and is undefined on request", async () => {
 		var promise;
 
-		handler = jsonSchema(schema, "foo");
+		handler = await jsonSchema(schema, "foo");
 
 		promise = handler(request);
 
@@ -118,7 +119,7 @@ describe("serviceberry-json-schema", () => {
 	});
 
 	it("should get a param as a own property of request", async () => {
-		handler = jsonSchema(schema, "foo");
+		handler = await jsonSchema(schema, "foo");
 
 		request.foo = request.getParams();
 
@@ -126,7 +127,7 @@ describe("serviceberry-json-schema", () => {
 	});
 
 	it("should validate the path params", async () => {
-		handler = jsonSchema(schema, "path");
+		handler = await jsonSchema(schema, "path");
 
 		await expectAsync(handler(request)).toBeResolved();
 
@@ -138,7 +139,7 @@ describe("serviceberry-json-schema", () => {
 			type: "string"
 		};
 
-		handler = jsonSchema(schema, "path.firstName");
+		handler = await jsonSchema(schema, "path.firstName");
 
 		await expectAsync(handler(request)).toBeResolved();
 
@@ -146,7 +147,7 @@ describe("serviceberry-json-schema", () => {
 	});
 
 	it("should validate the query params", async () => {
-		handler = jsonSchema(schema, "query");
+		handler = await jsonSchema(schema, "query");
 
 		await expectAsync(handler(request)).toBeResolved();
 
@@ -158,7 +159,7 @@ describe("serviceberry-json-schema", () => {
 			type: "string"
 		};
 
-		handler = jsonSchema(schema, "query.firstName");
+		handler = await jsonSchema(schema, "query.firstName");
 
 		await expectAsync(handler(request)).toBeResolved();
 
@@ -166,7 +167,7 @@ describe("serviceberry-json-schema", () => {
 	});
 
 	it("should validate the header params", async () => {
-		handler = jsonSchema(schema, "header");
+		handler = await jsonSchema(schema, "header");
 
 		await expectAsync(handler(request)).toBeResolved();
 
@@ -178,7 +179,7 @@ describe("serviceberry-json-schema", () => {
 			type: "string"
 		};
 
-		handler = jsonSchema(schema, "header.firstName");
+		handler = await jsonSchema(schema, "header.firstName");
 
 		await expectAsync(handler(request)).toBeResolved();
 
@@ -186,7 +187,7 @@ describe("serviceberry-json-schema", () => {
 	});
 
 	it("should validate the body", async () => {
-		handler = jsonSchema(schema, "body");
+		handler = await jsonSchema(schema, "body");
 
 		await expectAsync(handler(request)).toBeResolved();
 
@@ -194,7 +195,7 @@ describe("serviceberry-json-schema", () => {
 	});
 
 	it("should validate a named body param", async () => {
-		handler = jsonSchema(schema, "body.person");
+		handler = await jsonSchema(schema, "body.person");
 
 		request = createRequest({
 			person: request.getParams()
@@ -211,7 +212,7 @@ describe("serviceberry-json-schema", () => {
 			items: schema
 		};
 
-		handler = jsonSchema(schema, "body");
+		handler = await jsonSchema(schema, "body");
 
 		request = createRequest([request.getParams()]);
 
