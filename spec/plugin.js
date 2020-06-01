@@ -1,12 +1,9 @@
 /* eslint-env jasmine */
-/* globals expectAsync */
 
 "use strict";
 
 const jsonSchema = require("../plugin"),
-	Request = require("serviceberry/src/Request"),
-	{HttpError} = require("serviceberry"),
-	httpMocks = require("node-mocks-http");
+	{HttpError} = require("serviceberry");
 
 describe("serviceberry-json-schema", () => {
 	var schema,
@@ -91,14 +88,15 @@ describe("serviceberry-json-schema", () => {
 	});
 
 	it("should rethrow errors that are not schema related", async () => {
-		request.getParams.and.throwError(new HttpError("Oops!"));
+		const err = new Error("Oops!");
+
+		request.getParams.and.throwError(err);
 
 		try {
 			await handler(request);
 			fail();
 		} catch (error) {
-			expect(error.message).toBe("Oops!");
-			expect(error.is(500)).toBe(true);
+			expect(error).toBe(err);
 		}
 
 		expect(typeof handler).toBe("function");
@@ -118,7 +116,7 @@ describe("serviceberry-json-schema", () => {
 		});
 	});
 
-	it("should get a param as a own property of request", async () => {
+	it("should get a param as an own property of request", async () => {
 		handler = await jsonSchema(schema, "foo");
 
 		request.foo = request.getParams();
@@ -223,14 +221,7 @@ describe("serviceberry-json-schema", () => {
 });
 
 function createRequest (params) {
-	var incomingMessage = httpMocks.createRequest({
-			url: "/"
-		}),
-		request;
-
-	incomingMessage.setEncoding = Function.prototype;
-	request = new Request(incomingMessage);
-	Object.assign(request, jasmine.createSpyObj("request", [
+	const request = jasmine.createSpyObj("request", [
 		"getParams",
 		"getPathParams",
 		"getPathParam",
@@ -239,8 +230,10 @@ function createRequest (params) {
 		"getHeaders",
 		"getHeader",
 		"getBody",
-		"getBodyParam"
-	]));
+		"getBodyParam",
+		"fail"
+	]);
+
 	request.getParams.and.returnValue(params);
 
 	request.getPathParams.and.returnValue(params);
@@ -254,6 +247,10 @@ function createRequest (params) {
 
 	request.getBody.and.returnValue(params);
 	request.getBodyParam.and.callFake(byName.bind(null, params));
+
+	request.fail.and.callFake((...args) => {
+		throw new HttpError(...args);
+	});
 
 	return request;
 }
