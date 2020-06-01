@@ -1,20 +1,19 @@
 "use strict";
 
 const Ajv = require("ajv"),
-	{HttpError} = require("serviceberry"),
-	get = {
+	get = Object.assign(Object.create(null), {
 		all,
 		path,
 		query,
 		header,
 		body
-	},
-	getByName = {
+	}),
+	getByName = Object.assign(Object.create(null), {
 		path: pathByName,
 		query: queryByName,
 		header: headerByName,
 		body: bodyByName
-	};
+	});
 
 async function jsonSchema (schema, param, options = {}) {
 	var ajv,
@@ -54,24 +53,23 @@ async function validator (validate, paramGetter, request) {
 	}
 
 	if (errors) {
-		throw new HttpError(getMessage(errors), "Unprocessable Entity");
+		request.fail(getMessage(errors), "Unprocessable Entity");
 	}
 }
 
 function getParamGetter (param = "all") {
-	var parts = param.split("."),
-		[type, name] = parts,
+	var [type, ...name] = param.split("."),
 		getters,
 		getter;
 
-	if (name) {
+	if (name.length) {
 		getters = getByName;
 	} else {
 		getters = get;
 	}
 
-	if (getters.hasOwnProperty(type)) {
-		getter = getters[type].bind(null, ...parts.slice(1));
+	if (Object.getOwnPropertyNames(getters).includes(type)) {
+		getter = getters[type].bind(null, ...name);
 	} else {
 		getter = getOwnRequestProperty.bind(null, type);
 	}
@@ -116,7 +114,7 @@ function bodyByName (name, request) {
 }
 
 function getOwnRequestProperty (name, request) {
-	if (!request.hasOwnProperty(name)) {
+	if (!Object.getOwnPropertyNames(request).includes(name)) {
 		throw Error(
 			`serviceberry-json-schema: request has no own property "${name}".` +
 				`Did you indent to use a getter: ${Object.keys(get).join(", ")}?`
