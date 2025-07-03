@@ -1,6 +1,7 @@
 "use strict";
 
 const Ajv = require("ajv"),
+	addFormats = require("ajv-formats"),
 	get = Object.assign(Object.create(null), {
 		all,
 		path,
@@ -30,6 +31,7 @@ async function jsonSchema (schema, param, options = {}) {
 		ajv = options;
 	} else {
 		ajv = new Ajv(Object.assign({loadSchema: Function.prototype}, options));
+		addFormats(ajv);
 	}
 
 	return validator.bind(this, await ajv.compileAsync(schema), paramGetter);
