@@ -129,7 +129,7 @@ function getMessage (errors) {
 }
 
 function toMessages (error) {
-	return error.dataPath.slice(1) + " " + error.message;
+	return error.instancePath.slice(1) + " " + error.message;
 }
 
 module.exports = jsonSchema;
